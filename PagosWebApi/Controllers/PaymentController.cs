@@ -14,7 +14,7 @@ namespace PagosWebApi.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly List<Payment> _payments = new()
+        public  List<Payment> _payments = new()
         {
             new Payment
             {
