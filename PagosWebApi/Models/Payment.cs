@@ -7,14 +7,6 @@ namespace PagosWebApi.Models
 {
     public class Payment
     {
-        /*public Payment(Client client)
-        {
-            Id = Guid.NewGuid();
-            Client = client;
-            Console.WriteLine($"El total para {client.Name} es {Bill()}");
-            Console.WriteLine(client.Balance >= Total ? IsValid = true : IsValid = false);
-        }*/
-
         public int Id { get; set; }
         public Client Client { get; set; }
         public decimal Total { get; set; }
