@@ -62,22 +62,11 @@ namespace PagosWebApi.Controllers
             }
         }
 
-        // GET api/<MainController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<MainController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
 
         // PUT api/<MainController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AddItemstoCart(int client, int item)
+        //[HttpPut("{id}")]
+        [HttpPost]
+        public async Task<ActionResult<Client>> AddItemstoCart(int client, int item)
         {
             try
             {
@@ -89,7 +78,7 @@ namespace PagosWebApi.Controllers
                 dbClient.Cart.Add(dbItem);
                 await _context.SaveChangesAsync();
 
-                return Ok("Added item to cart");
+                return Ok(dbClient);
             }
             catch (Exception e)
             {
@@ -97,10 +86,5 @@ namespace PagosWebApi.Controllers
             }
         }
 
-        // DELETE api/<MainController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
