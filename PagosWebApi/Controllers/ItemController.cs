@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Mvc;
 using PagosWebApi.Models;
 
@@ -14,8 +13,8 @@ namespace PagosWebApi.Controllers
     {
         private readonly List<Item> _items = new()
         {
-            new() {Id = 1, Name = "papel", Price = 800},
-            new() {Id = 2, Name = "lapiz", Price = 1200}
+            new Item {Id = 1, Name = "papel", Price = 800},
+            new Item() {Id = 2, Name = "lapiz", Price = 1200}
         };
 
         // GET: api/<ItemController>
@@ -29,8 +28,8 @@ namespace PagosWebApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Item> Get(int id)
         {
-            Item item = _items.FirstOrDefault(c => c.Id == id);
-            return item == null ? NotFound(new { Message = "The item has not been found"}) : Ok(item);
+            var item = _items.FirstOrDefault(c => c.Id == id);
+            return item == null ? NotFound(new {Message = "The item has not been found" }) : Ok(item);
         }
 
         // POST api/<ItemController>
@@ -45,11 +44,8 @@ namespace PagosWebApi.Controllers
         [HttpPut("{id}")]
         public ActionResult<IEnumerable<Item>> Put(int id, Item updatedItem)
         {
-            Item item = _items.FirstOrDefault(c => c.Id == id);
-            if (item ==null)
-            {
-                return NotFound();
-            }
+            var item = _items.FirstOrDefault(c => c.Id == id);
+            if (item == null) return NotFound(new {Message = "The item has not been found"});
             item.Name = updatedItem.Name;
             item.Price = updatedItem.Price;
             return _items;
@@ -59,11 +55,8 @@ namespace PagosWebApi.Controllers
         [HttpDelete("{id}")]
         public ActionResult<IEnumerable<Item>> Delete(int id)
         {
-            Item item = _items.FirstOrDefault(c => c.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
+            var item = _items.FirstOrDefault(c => c.Id == id);
+            if (item == null) return NotFound(new { Message = "The item has not been found" });
 
             _items.Remove(item);
             return _items;
