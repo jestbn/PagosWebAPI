@@ -13,7 +13,7 @@ namespace PagosWebApi.Controllers
     [ApiController]
     public class ClientController : ControllerBase
     {
-        private readonly List<Client> _clients = new()
+        public List<Client> _clients = new()
         {
             new Client
             {
@@ -51,7 +51,7 @@ namespace PagosWebApi.Controllers
         public ActionResult<Client> Get(int id)
         {
             var client = _clients.FirstOrDefault(c => c.Id == id);
-            return client == null ? NotFound(new {Message = "The client has not been found"}) : Ok(client);
+            return client == null ? NotFound(new { Message = "The client has not been found" }) : Ok(client);
         }
 
         // POST api/<ClientController>
@@ -67,7 +67,7 @@ namespace PagosWebApi.Controllers
         public ActionResult<IEnumerable<Client>> Put(int id, Client updatedClient)
         {
             var client = _clients.FirstOrDefault(c => c.Id == id);
-            if (client == null) return NotFound(new {Message = "The client has not been found"});
+            if (client == null) return NotFound(new { Message = "The client has not been found" });
             client.Name = updatedClient.Name;
             client.Balance = updatedClient.Balance;
             client.Cart = updatedClient.Cart;
@@ -79,7 +79,7 @@ namespace PagosWebApi.Controllers
         public ActionResult<IEnumerable<Client>> Delete(int id)
         {
             var client = _clients.FirstOrDefault(c => c.Id == id);
-            if (client == null) return NotFound(new {Message = "The client has not been found"});
+            if (client == null) return NotFound(new { Message = "The client has not been found" });
             _clients.Remove(client);
             return _clients;
         }

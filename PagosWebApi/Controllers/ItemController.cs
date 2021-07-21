@@ -11,7 +11,7 @@ namespace PagosWebApi.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private readonly List<Item> _items = new()
+        public readonly List<Item> _items = new()
         {
             new Item {Id = 1, Name = "papel", Price = 800},
             new Item() {Id = 2, Name = "lapiz", Price = 1200}
