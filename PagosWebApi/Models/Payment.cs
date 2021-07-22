@@ -12,17 +12,5 @@ namespace PagosWebApi.Models
         public decimal Total { get; set; }
         public bool IsValid { get; set; }
 
-        public decimal Bill()
-        {
-            Total = 0;
-            if (Client.Cart.Any())
-            {
-                foreach (var item in Client.Cart) Total += item.Price;
-
-                return Total;
-            }
-
-            return Total;
-        }
     }
 }

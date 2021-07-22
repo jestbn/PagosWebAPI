@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PagosWebApi.Data;
 using PagosWebApi.Models;
 
@@ -19,19 +22,28 @@ namespace PagosWebApi.Controllers
             _context = context;
         }
 
-        // GET: api/<MainController>
+        // GET: api/GetInvoice/<MainController>
+        /// <summary>
+        ///     Generates invoice for the customer with the associated items
+        /// </summary>
+        /// <param name="client"> Client Id</param>
+        /// <param name="idItem">List of Items by </param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetBill(int client)
+        //[ActionName("GetInvoice")]
+
+        public async Task<IActionResult> GetInvoice(int client, int idItem)
         {
             try
-
             {
                 var dbClient = await _context.Clients.FindAsync(client);
-                if (dbClient == null) return NotFound(new {Message = "The client has not been found"});
+                if (dbClient == null) return NotFound(new { Message = "The client has not been found" });
 
                 var Pay = new Payment();
                 Pay.Client = dbClient;
                 Pay.Total = 0;
+
+                await AddItemsToCart(dbClient.Id, idItem);
 
                 if (dbClient.Cart != null)
                 {
@@ -42,16 +54,17 @@ namespace PagosWebApi.Controllers
                     if (dbClient.Balance >= Pay.Total)
                     {
                         Pay.IsValid = true;
-                        message = "valid";
+                        message = "valid invoice";
                     }
                     else
                     {
                         Pay.IsValid = false;
-                        message = "invalid, insufficient balance";
+                        message = "invalid invoice, insufficient balance";
                     }
 
-                    return Ok(
-                        $"Generated {message} bill id {Pay.Id} for client {dbClient.Id} with total of {Pay.Total}");
+                    _context.Payments.Add(Pay);
+                    await _context.SaveChangesAsync();
+                    return Ok($"Generated {message} ; id {Pay.Id} for client {dbClient.Id} with total of {Pay.Total}");
                 }
 
                 return Problem("The cart is empty");
@@ -62,22 +75,26 @@ namespace PagosWebApi.Controllers
             }
         }
 
-
-        // PUT api/<MainController>/5
-        //[HttpPut("{id}")]
         [HttpPost]
-        public async Task<ActionResult<Client>> AddItemstoCart(int client, int item)
+        //[ActionName("AddItemToCart")]
+
+        public async Task<ActionResult<Client>> AddItemsToCart(int client, int item)
         {
             try
             {
+
                 var dbClient = await _context.Clients.FindAsync(client);
-                if (dbClient == null) return NotFound(new {Message = "The client has not been found"});
+                if (dbClient == null) return NotFound(new { Message = "The client has not been found" });
                 var dbItem = await _context.Items.FindAsync(item);
                 if (dbItem == null) return NotFound(new { Message = "The item has not been found" });
-                
-                dbClient.Cart.Add(dbItem);
-                await _context.SaveChangesAsync();
+                var carrito = dbClient.Cart;
 
+                if (dbClient.Cart == null) dbClient.Cart = new List<Item>();
+
+                dbClient.Cart.Add(dbItem);
+                _context.Entry(dbClient).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
                 return Ok(dbClient);
             }
             catch (Exception e)
